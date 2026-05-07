@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assembly PC — Hardware Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green: #3ecf5e;
+      --green-dark: #28a745;
+      --navy: #0d1b2e;
+      --navy-light: #1a2f4a;
+      --text-white: #f0f4f8;
+      --text-muted: #7a9ab5;
+      --bg-light: #f4f6f8;
+      --border: #e2e8f0;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-light); color: #1a202c; overflow-x: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--navy); }
+    .logo-box { width: 34px; height: 34px; background: var(--green); border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+    .logo-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16px; color: var(--navy); }
+    .nav-links { display: flex; align-items: center; gap: 2px; }
+    .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #4a5568; text-decoration: none; transition: background 0.15s, color 0.15s; }
+    .nav-link:hover { background: #f0fdf4; color: #1a202c; }
+    .nav-link.active { background: var(--green); color: #fff; }
+    .nav-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .nav-auth-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
+    .nav-auth-btn:hover { background: var(--navy-light); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      margin-top: 64px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 48px 60px 0;
+    }
+    .page-header-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 32px; }
+    .page-header h1 { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .page-header p { font-size: 15px; color: #718096; max-width: 560px; line-height: 1.6; }
+
+    /* ── GALLERY TABS (Component / Built PC) ── */
+    .gallery-tabs { display: flex; gap: 0; border-bottom: none; }
+    .gallery-tab {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 24px;
+      font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600;
+      color: #718096; cursor: pointer; background: none; border: none;
+      border-bottom: 3px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .gallery-tab:hover { color: var(--navy); }
+    .gallery-tab.active { color: var(--green-dark); border-bottom-color: var(--green); }
+    .gallery-tab svg { width: 16px; height: 16px; }
+
+    /* ── MAIN CONTENT ── */
+    .gallery-body { max-width: 1400px; margin: 0 auto; padding: 36px 60px 80px; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 100px;
+      font-size: 13px; font-weight: 500;
+      border: 1.5px solid var(--border);
+      background: #fff; color: #4a5568;
+      cursor: pointer; transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .filter-chip:hover { border-color: var(--green); color: var(--green-dark); background: #f0fdf4; }
+    .filter-chip.active { background: var(--green); border-color: var(--green); color: #fff; }
+    .filter-chip svg { width: 13px; height: 13px; }
+
+    /* ── SEARCH ── */
+    .gallery-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .search-wrap { position: relative; }
+    .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #a0aec0; width: 15px; height: 15px; pointer-events: none; }
+    .search-wrap input {
+      padding: 10px 14px 10px 38px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      background: #fff; color: #1a202c; outline: none;
+      width: 280px; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-wrap input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(62,207,94,0.12); }
+    .search-wrap input::placeholder { color: #cbd5e0; }
+    .results-count { font-size: 13px; color: #a0aec0; font-weight: 500; }
+
+    /* ── GRID ── */
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    /* ── COMPONENT CARD ── */
+    .comp-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      animation: cardIn 0.35s ease both;
+    }
+    .comp-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); border-color: rgba(62,207,94,0.35); }
+    .comp-card.hidden-card { display: none; }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      background: #e8edf2; display: block;
+    }
+    .card-img-placeholder {
+      width: 100%; aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #e8edf2 0%, #d1dce8 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: #a0aec0;
+    }
+    .card-img-placeholder svg { width: 36px; height: 36px; opacity: 0.5; }
+
+    .card-body { padding: 14px 16px 16px; }
+    .card-name { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.3; }
+    .card-tags { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .tag-brand { font-size: 11px; font-weight: 600; color: #4a5568; background: #f4f6f8; border-radius: 5px; padding: 3px 8px; }
+    .tag-price { font-size: 11px; font-weight: 700; color: #fff; background: var(--green); border-radius: 5px; padding: 3px 8px; }
+    .tag-category { font-size: 11px; font-weight: 600; color: #1565c0; background: #e3f2fd; border-radius: 5px; padding: 3px 8px; }
+    .card-specs { border-top: 1px solid #f0f4f8; padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+    .spec-row { display: flex; justify-content: space-between; }
+    .spec-label { font-size: 11px; color: #a0aec0; }
+    .spec-val { font-size: 11px; font-weight: 600; color: #4a5568; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { grid-column: 1/-1; text-align: center; padding: 80px 0; }
+    .empty-state svg { width: 48px; height: 48px; color: #cbd5e0; margin-bottom: 16px; }
+    .empty-state h3 { font-family: 'Sora', sans-serif; font-size: 18px; color: #4a5568; margin-bottom: 6px; }
+    .empty-state p { font-size: 14px; color: #a0aec0; }
+
+    /* ── DETAIL MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(13,27,46,0.65);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .detail-modal {
+      background: #fff; border-radius: 20px;
+      width: 100%; max-width: 780px;
+      max-height: 88vh; overflow-y: auto;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 28px 64px rgba(0,0,0,0.18);
+      position: relative;
+    }
+    .modal-overlay.open .detail-modal { transform: translateY(0) scale(1); }
+
+    .modal-close-btn {
+      position: absolute; top: 16px; right: 16px; z-index: 10;
+      width: 34px; height: 34px; border-radius: 9px;
+      background: rgba(0,0,0,0.06); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: #4a5568;
+      transition: background 0.15s;
+    }
+    .modal-close-btn:hover { background: rgba(0,0,0,0.12); color: #1a202c; }
+
+    .modal-hero-img {
+      width: 100%; height: 280px; object-fit: cover;
+      background: linear-gradient(135deg, #e8edf2 0%, #c8d8e8 100%);
+      border-radius: 20px 20px 0 0; display: block;
+    }
+    .modal-hero-placeholder {
+      width: 100%; height: 280px;
+      background: linear-gradient(135deg, #e8edf2 0%, #c8d8e8 100%);
+      border-radius: 20px 20px 0 0;
+      display: flex; align-items: center; justify-content: center; color: #a0aec0;
+    }
+    .modal-hero-placeholder svg { width: 64px; height: 64px; opacity: 0.4; }
+
+    .modal-content { padding: 28px 36px 36px; }
+
+    .modal-header { margin-bottom: 20px; }
+    .modal-title { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+    .modal-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .modal-tag-brand { font-size: 12px; font-weight: 600; color: #4a5568; background: #f4f6f8; border-radius: 6px; padding: 4px 10px; }
+    .modal-tag-price { font-size: 13px; font-weight: 700; color: #fff; background: var(--green); border-radius: 6px; padding: 4px 12px; }
+    .modal-tag-cat { font-size: 12px; font-weight: 600; color: #1565c0; background: #e3f2fd; border-radius: 6px; padding: 4px 10px; }
+
+    .modal-desc { font-size: 14px; color: #718096; line-height: 1.7; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+
+    .modal-specs-title { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px; }
+    .modal-specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal-spec-item { background: #f8fafc; border-radius: 10px; padding: 12px 16px; }
+    .modal-spec-label { font-size: 11px; color: #a0aec0; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .modal-spec-val { font-size: 14px; font-weight: 600; color: #1a202c; }
+
+    .modal-footer { margin-top: 24px; display: flex; gap: 12px; }
+    .btn-learn { display: inline-flex; align-items: center; gap: 8px; background: var(--green); color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+    .btn-learn:hover { background: var(--green-dark); }
+    .btn-close-modal { display: inline-flex; align-items: center; gap: 8px; background: #f4f6f8; color: #4a5568; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.2s; }
+    .btn-close-modal:hover { background: #e2e8f0; }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="assembly-pc-homepage.html" class="nav-logo">
+    <div class="logo-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
+    </div>
+    <span class="logo-name">Assembly PC</span>
+  </a>
+  <div class="nav-links">
+    <a href="assembly-pc-homepage.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Home
+    </a>
+    <a href="#" class="nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      Gallery
+    </a>
+    <a href="#" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Simulator
+    </a>
+    <a href="#" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Quiz
+    </a>
+  </div>
+  <button class="nav-auth-btn" onclick="alert('Open login modal')">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Login / Sign Up
+  </button>
+</nav>
+
+<!-- ── PAGE HEADER ── -->
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <h1>Hardware Gallery</h1>
+      <p>Explore PC components and learn about their functions. Click any component to view full specifications.</p>
+    </div>
+  </div>
+  <!-- Gallery Tab Switcher -->
+  <div class="gallery-tabs">
+    <button class="gallery-tab active" onclick="switchGallery('components', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+      Components
+    </button>
+    <button class="gallery-tab" onclick="switchGallery('builds', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Built PCs
+      <span style="font-size:10px; background:#f4f6f8; color:#a0aec0; border-radius:100px; padding:2px 8px; font-weight:600;">Coming Soon</span>
+    </button>
+  </div>
+</div>
+
+<!-- ── COMPONENTS SECTION ── -->
+<div class="gallery-body" id="section-components">
+  <!-- Filter Bar -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-chip active" data-filter="all" onclick="filterComponents('all', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      All
+    </button>
+    <button class="filter-chip" data-filter="processor" onclick="filterComponents('processor', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+      Processor
+    </button>
+    <button class="filter-chip" data-filter="motherboard" onclick="filterComponents('motherboard', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 7h.01M12 7h.01M17 7h.01M7 12h10M7 17h10"/></svg>
+      Motherboard
+    </button>
+    <button class="filter-chip" data-filter="memory" onclick="filterComponents('memory', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="8" width="20" height="8" rx="2"/><path d="M6 8V6M10 8V6M14 8V6M18 8V6M6 16v2M10 16v2M14 16v2M18 16v2"/></svg>
+      Memory
+    </button>
+    <button class="filter-chip" data-filter="graphics" onclick="filterComponents('graphics', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><path d="M6 20v2M18 20v2"/></svg>
+      Graphics
+    </button>
+    <button class="filter-chip" data-filter="storage" onclick="filterComponents('storage', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+      Storage
+    </button>
+    <button class="filter-chip" data-filter="power" onclick="filterComponents('power', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Power
+    </button>
+    <button class="filter-chip" data-filter="cooling" onclick="filterComponents('cooling', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+      Cooling
+    </button>
+  </div>
+
+  <!-- Topbar: Search + count -->
+  <div class="gallery-topbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search components…" id="searchInput" oninput="searchComponents()" />
+    </div>
+    <span class="results-count" id="resultsCount">14 components</span>
+  </div>
+
+  <!-- 5-column Grid -->
+  <div class="components-grid" id="componentsGrid">
+
+    <!-- PROCESSORS -->
+    <div class="comp-card" data-category="processor" data-name="Intel Core i9-14900K" onclick="openDetail(0)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Intel Core i9-14900K</div>
+        <div class="card-tags">
+          <span class="tag-brand">Intel</span>
+          <span class="tag-price">$589</span>
+          <span class="tag-category">Processor</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Cores</span><span class="spec-val">24</span></div>
+          <div class="spec-row"><span class="spec-label">Threads</span><span class="spec-val">32</span></div>
+          <div class="spec-row"><span class="spec-label">Base Clock</span><span class="spec-val">3.2 GHz</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card" data-category="processor" data-name="AMD Ryzen 9 7950X" onclick="openDetail(1)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">AMD Ryzen 9 7950X</div>
+        <div class="card-tags">
+          <span class="tag-brand">AMD</span>
+          <span class="tag-price">$549</span>
+          <span class="tag-category">Processor</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Cores</span><span class="spec-val">16</span></div>
+          <div class="spec-row"><span class="spec-label">Threads</span><span class="spec-val">32</span></div>
+          <div class="spec-row"><span class="spec-label">Base Clock</span><span class="spec-val">4.5 GHz</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card" data-category="processor" data-name="Intel Core i5-14600K" onclick="openDetail(2)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Intel Core i5-14600K</div>
+        <div class="card-tags">
+          <span class="tag-brand">Intel</span>
+          <span class="tag-price">$319</span>
+          <span class="tag-category">Processor</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Cores</span><span class="spec-val">14</span></div>
+          <div class="spec-row"><span class="spec-label">Threads</span><span class="spec-val">20</span></div>
+          <div class="spec-row"><span class="spec-label">Base Clock</span><span class="spec-val">3.5 GHz</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOTHERBOARDS -->
+    <div class="comp-card" data-category="motherboard" data-name="ASUS ROG Maximus Z790 Hero" onclick="openDetail(3)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 7h.01M12 7h.01M17 7h.01M7 12h10M7 17h10"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">ASUS ROG Maximus Z790 Hero</div>
+        <div class="card-tags">
+          <span class="tag-brand">ASUS</span>
+          <span class="tag-price">$629</span>
+          <span class="tag-category">Motherboard</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Socket</span><span class="spec-val">LGA1700</span></div>
+          <div class="spec-row"><span class="spec-label">Chipset</span><span class="spec-val">Z790</span></div>
+          <div class="spec-row"><span class="spec-label">Form Factor</span><span class="spec-val">ATX</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card" data-category="motherboard" data-name="MSI MAG B650 Tomahawk" onclick="openDetail(4)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 7h.01M12 7h.01M17 7h.01M7 12h10M7 17h10"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">MSI MAG B650 Tomahawk</div>
+        <div class="card-tags">
+          <span class="tag-brand">MSI</span>
+          <span class="tag-price">$249</span>
+          <span class="tag-category">Motherboard</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Socket</span><span class="spec-val">AM5</span></div>
+          <div class="spec-row"><span class="spec-label">Chipset</span><span class="spec-val">B650</span></div>
+          <div class="spec-row"><span class="spec-label">Form Factor</span><span class="spec-val">ATX</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMORY -->
+    <div class="comp-card" data-category="memory" data-name="Corsair Vengeance DDR5 32GB" onclick="openDetail(5)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="20" height="8" rx="2"/><path d="M6 8V6M10 8V6M14 8V6M18 8V6M6 16v2M10 16v2M14 16v2M18 16v2"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Corsair Vengeance DDR5 32GB</div>
+        <div class="card-tags">
+          <span class="tag-brand">Corsair</span>
+          <span class="tag-price">$139</span>
+          <span class="tag-category">Memory</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Capacity</span><span class="spec-val">32GB</span></div>
+          <div class="spec-row"><span class="spec-label">Type</span><span class="spec-val">DDR5</span></div>
+          <div class="spec-row"><span class="spec-label">Speed</span><span class="spec-val">5600 MHz</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card" data-category="memory" data-name="G.Skill Trident Z5 RGB 64GB" onclick="openDetail(6)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="8" width="20" height="8" rx="2"/><path d="M6 8V6M10 8V6M14 8V6M18 8V6M6 16v2M10 16v2M14 16v2M18 16v2"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">G.Skill Trident Z5 RGB 64GB</div>
+        <div class="card-tags">
+          <span class="tag-brand">G.Skill</span>
+          <span class="tag-price">$219</span>
+          <span class="tag-category">Memory</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Capacity</span><span class="spec-val">64GB</span></div>
+          <div class="spec-row"><span class="spec-label">Type</span><span class="spec-val">DDR5</span></div>
+          <div class="spec-row"><span class="spec-label">Speed</span><span class="spec-val">6000 MHz</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRAPHICS -->
+    <div class="comp-card" data-category="graphics" data-name="NVIDIA GeForce RTX 4090" onclick="openDetail(7)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><path d="M6 20v2M18 20v2"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">NVIDIA GeForce RTX 4090</div>
+        <div class="card-tags">
+          <span class="tag-brand">NVIDIA</span>
+          <span class="tag-price">$1,599</span>
+          <span class="tag-category">Graphics</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">VRAM</span><span class="spec-val">24GB</span></div>
+          <div class="spec-row"><span class="spec-label">Boost Clock</span><span class="spec-val">2.52 GHz</span></div>
+          <div class="spec-row"><span class="spec-label">TDP</span><span class="spec-val">450W</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card" data-category="graphics" data-name="AMD Radeon RX 7900 XTX" onclick="openDetail(8)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/><path d="M6 20v2M18 20v2"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">AMD Radeon RX 7900 XTX</div>
+        <div class="card-tags">
+          <span class="tag-brand">AMD</span>
+          <span class="tag-price">$949</span>
+          <span class="tag-category">Graphics</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">VRAM</span><span class="spec-val">24GB</span></div>
+          <div class="spec-row"><span class="spec-label">Boost Clock</span><span class="spec-val">2.5 GHz</span></div>
+          <div class="spec-row"><span class="spec-label">TDP</span><span class="spec-val">355W</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORAGE -->
+    <div class="comp-card" data-category="storage" data-name="Samsung 990 Pro 2TB NVMe" onclick="openDetail(9)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Samsung 990 Pro 2TB NVMe</div>
+        <div class="card-tags">
+          <span class="tag-brand">Samsung</span>
+          <span class="tag-price">$179</span>
+          <span class="tag-category">Storage</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Capacity</span><span class="spec-val">2TB</span></div>
+          <div class="spec-row"><span class="spec-label">Interface</span><span class="spec-val">PCIe 4.0</span></div>
+          <div class="spec-row"><span class="spec-label">Read Speed</span><span class="spec-val">7,450 MB/s</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card" data-category="storage" data-name="Seagate Barracuda 4TB HDD" onclick="openDetail(10)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Seagate Barracuda 4TB HDD</div>
+        <div class="card-tags">
+          <span class="tag-brand">Seagate</span>
+          <span class="tag-price">$79</span>
+          <span class="tag-category">Storage</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Capacity</span><span class="spec-val">4TB</span></div>
+          <div class="spec-row"><span class="spec-label">Interface</span><span class="spec-val">SATA III</span></div>
+          <div class="spec-row"><span class="spec-label">RPM</span><span class="spec-val">5,400 RPM</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POWER -->
+    <div class="comp-card" data-category="power" data-name="Corsair RM1000x 1000W" onclick="openDetail(11)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Corsair RM1000x 1000W</div>
+        <div class="card-tags">
+          <span class="tag-brand">Corsair</span>
+          <span class="tag-price">$199</span>
+          <span class="tag-category">Power</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Wattage</span><span class="spec-val">1000W</span></div>
+          <div class="spec-row"><span class="spec-label">Rating</span><span class="spec-val">80+ Gold</span></div>
+          <div class="spec-row"><span class="spec-label">Modular</span><span class="spec-val">Fully</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COOLING -->
+    <div class="comp-card" data-category="cooling" data-name="Noctua NH-D15 CPU Cooler" onclick="openDetail(12)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Noctua NH-D15 CPU Cooler</div>
+        <div class="card-tags">
+          <span class="tag-brand">Noctua</span>
+          <span class="tag-price">$99</span>
+          <span class="tag-category">Cooling</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Type</span><span class="spec-val">Air Cooler</span></div>
+          <div class="spec-row"><span class="spec-label">TDP Support</span><span class="spec-val">250W</span></div>
+          <div class="spec-row"><span class="spec-label">Fans</span><span class="spec-val">2x 140mm</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card" data-category="cooling" data-name="NZXT Kraken 360 AIO" onclick="openDetail(13)">
+      <div class="card-img-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <div class="card-body">
+        <div class="card-name">NZXT Kraken 360 AIO</div>
+        <div class="card-tags">
+          <span class="tag-brand">NZXT</span>
+          <span class="tag-price">$149</span>
+          <span class="tag-category">Cooling</span>
+        </div>
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-label">Type</span><span class="spec-val">AIO Liquid</span></div>
+          <div class="spec-row"><span class="spec-label">Radiator</span><span class="spec-val">360mm</span></div>
+          <div class="spec-row"><span class="spec-label">Fans</span><span class="spec-val">3x 120mm</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state (hidden by default) -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <h3>No components found</h3>
+      <p>Try adjusting your search or filter.</p>
+    </div>
+
+  </div><!-- /components-grid -->
+</div><!-- /section-components -->
+
+<!-- ── BUILT PCs SECTION (placeholder) ── -->
+<div class="gallery-body" id="section-builds" style="display:none;">
+  <div style="text-align:center; padding: 100px 0;">
+    <div style="width:72px;height:72px;background:#f4f6f8;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </div>
+    <h3 style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:#0d1b2e;margin-bottom:8px;">Built PCs Coming Soon</h3>
+    <p style="font-size:15px;color:#718096;max-width:400px;margin:0 auto;line-height:1.6;">Once you complete a build in the simulator, your customized PC will appear here for others to explore.</p>
+  </div>
+</div>
+
+<!-- ── DETAIL MODAL ── -->
+<div class="modal-overlay" id="detailModal" onclick="handleModalClick(event)">
+  <div class="detail-modal">
+    <button class="modal-close-btn" onclick="closeDetail()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-hero-placeholder" id="modalHeroImg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" width="64" height="64" id="modalHeroIcon">
+        <rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/>
+        <path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>
+      </svg>
+    </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Component Name</div>
+        <div class="modal-tags">
+          <span class="modal-tag-brand" id="modalBrand">Brand</span>
+          <span class="modal-tag-price" id="modalPrice">$000</span>
+          <span class="modal-tag-cat" id="modalCat">Category</span>
+        </div>
+      </div>
+      <p class="modal-desc" id="modalDesc">Full description of the component goes here.</p>
+      <div class="modal-specs-title">Full Specifications</div>
+      <div class="modal-specs-grid" id="modalSpecs"></div>
+      <div class="modal-footer">
+        <button class="btn-learn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          Add to Simulator
+        </button>
+        <button class="btn-close-modal" onclick="closeDetail()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── COMPONENT DATA ──
+  const components = [
+    {
+      name: 'Intel Core i9-14900K', brand: 'Intel', price: '$589', category: 'Processor',
+      desc: 'Intel\'s flagship Raptor Lake Refresh processor featuring 24 cores (8P+16E) and 32 threads. Designed for extreme gaming, content creation, and multitasking workloads with class-leading single-threaded performance.',
+      specs: { Cores: '24 (8P+16E)', Threads: '32', 'Base Clock': '3.2 GHz', 'Boost Clock': '6.0 GHz', TDP: '125W (253W PL2)', Cache: '36MB L3', Socket: 'LGA1700', Lithography: 'Intel 7 (10nm)' }
+    },
+    {
+      name: 'AMD Ryzen 9 7950X', brand: 'AMD', price: '$549', category: 'Processor',
+      desc: 'AMD\'s top-tier Zen 4 architecture processor with 16 cores and 32 threads. Exceptional multi-threaded performance for 3D rendering, video editing, and scientific computing on the AM5 platform.',
+      specs: { Cores: '16', Threads: '32', 'Base Clock': '4.5 GHz', 'Boost Clock': '5.7 GHz', TDP: '170W', Cache: '64MB L3', Socket: 'AM5', Lithography: 'TSMC 5nm' }
+    },
+    {
+      name: 'Intel Core i5-14600K', brand: 'Intel', price: '$319', category: 'Processor',
+      desc: 'The best mid-range gaming CPU from Intel\'s 14th generation lineup. Balances price and performance with 14 cores and strong gaming frame rates that rival much pricier chips.',
+      specs: { Cores: '14 (6P+8E)', Threads: '20', 'Base Clock': '3.5 GHz', 'Boost Clock': '5.3 GHz', TDP: '125W', Cache: '24MB L3', Socket: 'LGA1700', Lithography: 'Intel 7 (10nm)' }
+    },
+    {
+      name: 'ASUS ROG Maximus Z790 Hero', brand: 'ASUS', price: '$629', category: 'Motherboard',
+      desc: 'A premium Z790 flagship motherboard from ASUS ROG designed for Intel 12th/13th/14th Gen processors. Features robust power delivery, extensive connectivity, and aggressive RGB aesthetics for enthusiast builds.',
+      specs: { Socket: 'LGA1700', Chipset: 'Intel Z790', 'Form Factor': 'ATX', 'Memory Slots': '4x DDR5', 'Max RAM': '128GB', 'PCIe Slots': '2x PCIe 5.0 x16', 'M.2 Slots': '5x M.2', USB: '2x USB4 Type-C' }
+    },
+    {
+      name: 'MSI MAG B650 Tomahawk', brand: 'MSI', price: '$249', category: 'Motherboard',
+      desc: 'A feature-rich mid-range AMD AM5 motherboard that supports Ryzen 7000 series processors. Offers PCIe 5.0 support, DDR5, and solid power delivery at an accessible price point.',
+      specs: { Socket: 'AM5', Chipset: 'AMD B650', 'Form Factor': 'ATX', 'Memory Slots': '4x DDR5', 'Max RAM': '128GB', 'PCIe Slots': '1x PCIe 5.0 x16', 'M.2 Slots': '3x M.2', USB: '1x USB 3.2 Gen2x2' }
+    },
+    {
+      name: 'Corsair Vengeance DDR5 32GB', brand: 'Corsair', price: '$139', category: 'Memory',
+      desc: 'High-performance DDR5 memory kit optimized for Intel and AMD next-gen platforms. Runs at 5600 MHz with tight timings for improved bandwidth in gaming and productivity applications.',
+      specs: { Capacity: '32GB (2x16GB)', Type: 'DDR5', Speed: '5600 MHz', Timings: 'CL36-36-36-76', Voltage: '1.25V', 'XMP/EXPO': 'XMP 3.0', Profile: 'Low-profile', RGB: 'No' }
+    },
+    {
+      name: 'G.Skill Trident Z5 RGB 64GB', brand: 'G.Skill', price: '$219', category: 'Memory',
+      desc: 'A 64GB DDR5 kit with blazing 6000 MHz speeds and vibrant addressable RGB lighting. Ideal for content creators and power users running memory-intensive applications and virtual machines.',
+      specs: { Capacity: '64GB (2x32GB)', Type: 'DDR5', Speed: '6000 MHz', Timings: 'CL30-40-40-96', Voltage: '1.35V', 'XMP/EXPO': 'XMP 3.0 / EXPO', RGB: 'Addressable RGB', Height: '44mm' }
+    },
+    {
+      name: 'NVIDIA GeForce RTX 4090', brand: 'NVIDIA', price: '$1,599', category: 'Graphics',
+      desc: 'NVIDIA\'s ultimate consumer GPU built on the Ada Lovelace architecture. Delivers unmatched performance for 4K gaming, ray tracing, and AI-accelerated creative workflows with 16,384 CUDA cores.',
+      specs: { VRAM: '24GB GDDR6X', Architecture: 'Ada Lovelace', 'CUDA Cores': '16,384', 'Base Clock': '2.23 GHz', 'Boost Clock': '2.52 GHz', TDP: '450W', Connector: '16-pin (PCIe 5.0)', 'RT Cores': '3rd Gen' }
+    },
+    {
+      name: 'AMD Radeon RX 7900 XTX', brand: 'AMD', price: '$949', category: 'Graphics',
+      desc: 'AMD\'s flagship RDNA 3 GPU offering exceptional 4K performance and 24GB of fast GDDR6 memory. A compelling alternative for content creators who need massive VRAM without the premium price.',
+      specs: { VRAM: '24GB GDDR6', Architecture: 'RDNA 3', 'Stream Processors': '12,288', 'Base Clock': '1.9 GHz', 'Boost Clock': '2.5 GHz', TDP: '355W', Connector: '2x 8-pin', 'Infinity Cache': '96MB' }
+    },
+    {
+      name: 'Samsung 990 Pro 2TB NVMe', brand: 'Samsung', price: '$179', category: 'Storage',
+      desc: 'Samsung\'s top-tier consumer NVMe SSD utilizing the in-house MLC V-NAND and Elpis controller. Delivers PCIe 4.0 speeds perfect for fast OS boot, game loading, and large file transfers.',
+      specs: { Capacity: '2TB', Interface: 'PCIe 4.0 x4 NVMe 2.0', 'Sequential Read': '7,450 MB/s', 'Sequential Write': '6,900 MB/s', 'Random Read (4K)': '1,600K IOPS', 'Random Write (4K)': '1,550K IOPS', 'Form Factor': 'M.2 2280', TBW: '1,200 TBW' }
+    },
+    {
+      name: 'Seagate Barracuda 4TB HDD', brand: 'Seagate', price: '$79', category: 'Storage',
+      desc: 'A reliable and affordable 3.5" hard disk drive ideal for mass storage, backups, and secondary drives. Provides large capacity at a low cost per gigabyte for media libraries and archives.',
+      specs: { Capacity: '4TB', Interface: 'SATA III 6Gb/s', RPM: '5,400 RPM', Cache: '256MB', 'Form Factor': '3.5"', TBW: '—', 'Sequential Read': '~190 MB/s', Warranty: '2 Years' }
+    },
+    {
+      name: 'Corsair RM1000x 1000W', brand: 'Corsair', price: '$199', category: 'Power',
+      desc: 'A fully modular, high-efficiency power supply rated at 1000W. Built with 80 PLUS Gold certification and Japanese capacitors for stable, clean power delivery to even the most demanding system configurations.',
+      specs: { Wattage: '1000W', Efficiency: '80+ Gold', Modular: 'Fully Modular', Fan: '135mm FDB', Rails: 'Single +12V', 'PCIe Connectors': '6x 8-pin + 1x 16-pin', ATX: 'ATX 3.0 Ready', Warranty: '10 Years' }
+    },
+    {
+      name: 'Noctua NH-D15 CPU Cooler', brand: 'Noctua', price: '$99', category: 'Cooling',
+      desc: 'The gold standard of air cooling. The dual-tower NH-D15 rivals many 360mm AIOs in thermal performance using two 140mm fans and a massive heatsink, all without the complexity of liquid cooling.',
+      specs: { Type: 'Air Cooler', Height: '165mm', Fans: '2x NF-A15 140mm', 'Fan Speed': '300–1500 RPM', Noise: '≤24.6 dB(A)', 'TDP Rating': '~250W+', 'Socket Support': 'Intel & AMD', Weight: '1,320g' }
+    },
+    {
+      name: 'NZXT Kraken 360 AIO', brand: 'NZXT', price: '$149', category: 'Cooling',
+      desc: 'A 360mm all-in-one liquid cooler featuring NZXT\'s signature infinity mirror pump head and three 120mm Aer P fans. Delivers low temperatures and quiet operation for high-end builds with NZXT CAM software support.',
+      specs: { Type: 'AIO Liquid Cooler', Radiator: '360mm', Fans: '3x 120mm Aer P', 'Pump Speed': '800–2800 RPM', 'Fan Speed': '500–2000 RPM', Noise: '≤36 dB(A)', 'Socket Support': 'Intel LGA1700 / AMD AM5', RGB: 'Infinity Mirror' }
+    },
+  ];
+
+  // ── FILTER ──
+  let activeFilter = 'all';
+  let searchQuery = '';
+
+  function filterComponents(filter, el) {
+    activeFilter = filter;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    applyFilters();
+  }
+
+  function searchComponents() {
+    searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const cards = document.querySelectorAll('.comp-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const cat = card.dataset.category;
+      const name = card.dataset.name.toLowerCase();
+      const matchFilter = activeFilter === 'all' || cat === activeFilter;
+      const matchSearch = name.includes(searchQuery);
+      if (matchFilter && matchSearch) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    document.getElementById('resultsCount').textContent = visible + ' component' + (visible !== 1 ? 's' : '');
+    document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  // ── GALLERY TAB SWITCH ──
+  function switchGallery(tab, el) {
+    document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('section-components').style.display = tab === 'components' ? '' : 'none';
+    document.getElementById('section-builds').style.display = tab === 'builds' ? '' : 'none';
+  }
+
+  // ── DETAIL MODAL ──
+  function openDetail(idx) {
+    const c = components[idx];
+    document.getElementById('modalTitle').textContent = c.name;
+    document.getElementById('modalBrand').textContent = c.brand;
+    document.getElementById('modalPrice').textContent = c.price;
+    document.getElementById('modalCat').textContent = c.category;
+    document.getElementById('modalDesc').textContent = c.desc;
+    const grid = document.getElementById('modalSpecs');
+    grid.innerHTML = '';
+    Object.entries(c.specs).forEach(([k, v]) => {
+      grid.innerHTML += `<div class="modal-spec-item"><div class="modal-spec-label">${k}</div><div class="modal-spec-val">${v}</div></div>`;
+    });
+    document.getElementById('detailModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDetail() {
+    document.getElementById('detailModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function handleModalClick(e) {
+    if (e.target === document.getElementById('detailModal')) closeDetail();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+</script>
+
+</body>
+</html>
